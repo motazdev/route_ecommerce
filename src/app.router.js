@@ -8,7 +8,14 @@ import cartRouter from "./modules/cart/cart.router.js";
 import orderRouter from "./modules/order/order.router.js";
 import morgan from "morgan";
 export const appRouter = (app, express) => {
-    app.use(express.json());
+    // app.use(express.json());
+
+    app.use((req, res, next) => {
+        if(req.originalUrl.includes("/order/webhook")) return next()
+        
+        express.json()(req, res, next)
+    })
+
     if (process.env.NODE_ENV == "dev") {
         app.use(morgan(process.env.NODE_ENV));
     }

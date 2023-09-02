@@ -19,40 +19,39 @@ export const addToCart = async (req, res, next) => {
     // await cart.save();
 
 
-    const isProductInCart = await Cart.findOneAndUpdate({
+    const isProductInCart = await Cart.findOne({
         user: req.user._id,
         "products.productId": productId
     });
-    console.log("isProductInCart :: ", isProductInCart)
-    if (isProductInCart) {
-        isProductInCart.products.forEach(productObj => {
-            if (productObj.productId.toString() === productId.toString() && (product.quantity + quantity < product.avaliableItems)) {
-                productObj.quantity = quantity;
-            } else {
-                productObj.quantity = productObj.quantity + quantity;
-            }
-        });
-        await isProductInCart.save();
+   if (isProductInCart) {
+    isProductInCart.products.forEach((productObj) => {
+      if (
+        productObj.productId.toString() === productId.toString() &&
+        productObj.quantity + quantity < product.availableItems
+      ) {
+        productObj.quantity = productObj.quantity + quantity;
+      }
+    });
+    await isProductInCart.save();
+    // response
+    return res.json({
+      success: true,
+      results: isProductInCart,
+      message: "Product added successfully!",
+    });
+  }  else {
+        const cart = await Cart.findOneAndUpdate(
+          { user: req.user._id },
+          { $push: { products: { productId, quantity } } },
+          { new: true }
+        );
+        // response
         return res.json({
-            success: true,
-            results: isProductInCart,
-            message: "Product added successfully"
+          success: true,
+          results: cart,
+          message: "Product added successfully!",
         });
-
-    } else {
-        const cart = await Cart.findOneAndUpdate({ user: req.user._id },
-            { $push: { products: { productId, quantity } } },
-            { new: true });
-        console.log("cart: ", cart)
-        return res.json({
-            success: true,
-            results: cart,
-            message: "Product added successfully"
-        });
-
-
-    }
-
+      }
 
 };
 

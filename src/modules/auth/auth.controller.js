@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import { sendEmail } from "../../utils/sendEmails.js";
 import { confirmEmail } from "../../utils/templates/confirmEmail.js";
 import { Token } from "../../../DB/models/token.model.js";
+import { Cart } from "../../../DB/models/cart.model.js";
 export const register = async (req, res, next) => {
     const { userName, email, password } = req.body;
     const isExist = await User.findOne({ email });
@@ -35,7 +36,7 @@ export const activateAccount = async (req, res, next) => {
         $unset: { activationCode: 1 }
     });
     if (!user) return next(new Error("User not found", { cause: 400 }));
-
+    await Cart.create({ user: user._id });
     return res.send("Congratulations, Your account is now activated successfully! Try to login..");
 
 };
@@ -63,7 +64,7 @@ export const login = async (req, res, next) => {
         expiredAt: jwt.verify(token, process.env.JWT_TOKEN).exp
     });
     user.refreshToken = refreshToken;
-    user.staus = 'online';
+    user.status = 'online';
     await user.save();
     // res.cookie(String(user._id), token, {
     //     path: '/',
@@ -72,7 +73,7 @@ export const login = async (req, res, next) => {
     //     sameSite: 'lax'
     // });
     res.cookie(`jwt`, refreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
-
+    console.log("dataa here: ", user)
     return res.json({ success: true, token, authUserState: user });
 };
 

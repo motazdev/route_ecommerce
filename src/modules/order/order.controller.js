@@ -119,6 +119,7 @@ export const createOrder = async (req, res, next) => {
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
             mode: "payment",
+            metadata: {order_id: order._id.toString()},
             success_url: process.env.SUCCESS_URL,
             cancel_url: process.env.CANCEL_URL,
             // line_items: [{
@@ -168,3 +169,25 @@ export const cancelOrder = async (req, res, next) => {
 
     return res.json({ success: true, message: "Order canceled successfully" });
 };
+
+
+export const webhook = async (req, res, next) => {
+    const stripe = new Stripe(process.env.STRIPE_KEY)
+    const sig = request.headers['stripe-signature'];
+    let event;
+    try {
+        event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+    } catch (err) {
+        response.status(400).send(`Webhook Error: ${err.message}`);
+        return;
+    }
+    const orderId = event.data.object.metadata.order_id;
+
+    if(event.type == "checkout.seesion.completed") {
+        await Order.findOneAndUpdate({_id: orderId}, {status: "payed"})
+    }
+
+    await Order.findOneAndUpdate({_id: orderId}, {status: "failed to pay"})
+
+    return;
+}

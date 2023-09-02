@@ -6,7 +6,6 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 const app = express();
 
-app.use(cors({ origin: "http://localhost:8000", credentials: true }));
 
 // CUSTOM CORS MIDDLEWARE // 
 // const whiteList = ["http://localhost:8000"];
@@ -29,6 +28,7 @@ app.use(cors({ origin: "http://localhost:8000", credentials: true }));
 
 app.use(cookieParser());
 dotenv.config();
+app.use(cors({ origin: "http://localhost:8000", credentials: true }));
 
 const port = process.env.PORT;
 
