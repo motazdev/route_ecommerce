@@ -5,7 +5,7 @@ import { fileUpload, filterObj } from "../../utils/multer.js";
 import { createBrandSchema, deleteBrandSchema, updateBrandSchema } from "./brand.validation.js";
 import { isValid } from "../../middleware/validation.middleware.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
-import { allCategs, createBrand, deleteBrand, updateBrand } from "./brand.controller.js";
+import { allBrands, createBrand, deleteBrand, updateBrand } from "./brand.controller.js";
 const router = Router();
 
 
@@ -24,7 +24,7 @@ router.delete("/:brandId",
     isValid(deleteBrandSchema), deleteBrand);
 
 
-router.get("/", allCategs);
+router.get("/", allBrands);
 
 
 

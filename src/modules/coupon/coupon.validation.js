@@ -18,6 +18,10 @@ export const updateCouponSchema = joi.object({
     expiredAt: joi.date().greater(Date.now())
 });
 
+export const checkCouponSchema = joi.object({
+    code: joi.string().length(5).required(),
+});
+
 
 
 export const deleteCouponSchema = joi.object({

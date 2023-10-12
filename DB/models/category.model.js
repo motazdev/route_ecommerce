@@ -38,4 +38,7 @@ categorySchema.virtual('subcategory', {
     foreignField: 'categoryId'
 });
 
+categorySchema.pre("remove", {document: true, query: false} ,async function() {
+    await Subcategory.deleteMany({categoryId: this._id})
+})
 export const Category = mongoose.models.Category || model('Category', categorySchema);

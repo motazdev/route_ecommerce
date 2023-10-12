@@ -7,14 +7,10 @@ const validateObjectId = (value, helper) => {
 };
 
 export const createOrderSchema = joi.object({
-    productId: joi.string().custom(validateObjectId).required(),
-    quantity: joi.number().integer().min(1).required(),
-    address: joi.string().min(5).required(),
+    address: joi.string().min(10).required(),
     coupon: joi.string().length(5),
-    phone: joi.string().required(),
-    // phone: joi.string().required().regex("^(\+201|01|00201)[0-2,5]{1}[0-9]{8}"),
+    phone: joi.string().length(14).required(),
     payment: joi.string().valid("cash", "visa").required(),
-
 }).required();
 
 

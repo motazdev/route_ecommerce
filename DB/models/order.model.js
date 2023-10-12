@@ -1,69 +1,87 @@
 import mongoose, { Schema, Types, model } from "mongoose";
 
-const orderSchema = new Schema({
+const orderSchema = new Schema(
+  {
     user: {
-        type: Types.ObjectId,
-        ref: "User",
-        required: true,
+      type: Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-    products: [{
+    products: [
+      {
         _id: false,
         productId: {
-            type: Types.ObjectId,
-            ref: "Product"
+          type: Types.ObjectId,
+          ref: "Product",
         },
         quantity: {
-            type: Number, min: 1
+          type: Number,
+          min: 1,
         },
         name: String,
         itemPrice: Number,
-        totalPrice: Number
-    }],
+        totalPrice: Number,
+      },
+    ],
     invoice: { id: String, url: String },
     address: {
-        type: String,
-        required: true
-
+      type: String,
+      required: true,
     },
     phone: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     price: {
-        type: Number,
-        required: true
+      type: Number,
+      required: true,
     },
     coupon: {
-        id: {
-            type: Types.ObjectId,
-            ref: "Coupon"
-        },
-        name: String,
-        discount: {
-            type: Number, min: 1, max: 100
-        }
+      id: {
+        type: Types.ObjectId,
+        ref: "Coupon",
+      },
+      name: String,
+      discount: {
+        type: Number,
+        min: 1,
+        max: 100,
+      },
     },
     status: {
-        type: String,
-        enum: ["placed", "shipped", "delivered", 'canceled', 
-        'refunded', "payed", "failed to pay"],
-        default: "placed"
+      type: String,
+      enum: [
+        "placed",
+        "shipped",
+        "delivered",
+        "canceled",
+        "refunded",
+        "payed",
+        "failed to pay",
+      ],
+      default: "placed",
     },
     payment: {
-        type: String,
-        enum: ["visa", 'cash'],
-        default: "cash"
-    }
-}, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
+      type: String,
+      enum: ["visa", "cash"],
+      default: "cash",
+    },
+  },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    strictQuery: true,
+    toObject: { virtuals: true },
+  }
+  // }, { timestamps: true, strictQuery: true, toJSON: { virtuals: true } });
+);
 
 orderSchema.virtual("finalPrice").get(function () {
-
-    return this.coupon ? Number.parseFloat(
+  return this.coupon.discount
+    ? Number.parseFloat(
         this.price - (this.price * this.coupon.discount) / 100
-    ).toFixed(2)
-        : this.price;
-
+      ).toFixed(2)
+    : Number(this.price);
 });
 
-
-export const Order = mongoose.models.Order || model('Order', orderSchema);
+export const Order = mongoose.models.Order || model("Order", orderSchema);

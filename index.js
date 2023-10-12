@@ -6,8 +6,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 const app = express();
 
-
-// CUSTOM CORS MIDDLEWARE // 
+// CUSTOM CORS MIDDLEWARE //
 // const whiteList = ["http://localhost:8000"];
 // app.use((req, res, next) => {
 //   if (req.originalUrl.includes("/auth/confirmEmail")) {

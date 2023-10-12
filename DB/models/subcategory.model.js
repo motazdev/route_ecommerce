@@ -37,4 +37,5 @@ const subCategorySchema = new Schema({
     timestamps: true
 });
 
+// export const Subcategory = mongoose.models.Subcategory || model('Subcategory', subCategorySchema);
 export const Subcategory = mongoose.models.Subcategory || model('Subcategory', subCategorySchema);
