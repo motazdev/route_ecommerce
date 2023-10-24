@@ -8,7 +8,7 @@ const app = express();
 
 app.use(cookieParser());
 dotenv.config();
-app.use(cors({ origin: "http://localhost:8000", credentials: true }));
+// app.use(cors({ origin: "http://localhost:8000", credentials: true }));
 
 const port = process.env.PORT;
 
