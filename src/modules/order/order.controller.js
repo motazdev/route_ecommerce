@@ -109,25 +109,19 @@ export const createOrder = async (req, res, next) => {
   order.invoice = { id: public_id, url: secure_url };
   await order.save();
 
-  const isSent = await sendEmail({
-    to: user.email,
-    subject: "Order Invoice",
-    attachments: [
-      {
-        path: secure_url,
-        contentType: "application/pdf",
-      },
-    ],
-  }).then(() => {
-    console.log("hhhhhhhhhhhh");
-    updateStock(order.products, true);
-    clearCart(user._id);
-  });
-  console.log("isSent : ", isSent);
-  // if (isSent) {
+  // const isSent = await sendEmail({
+  //   to: user.email,
+  //   subject: "Order Invoice",
+  //   attachments: [
+  //     {
+  //       path: secure_url,
+  //       contentType: "application/pdf",
+  //     },
+  //   ],
+  // }).then(() => {
   //   updateStock(order.products, true);
   //   clearCart(user._id);
-  // }
+  // });
 
   if (payment == "visa") {
     const stripe = new Stripe(process.env.STRIPE_KEY);
@@ -140,7 +134,16 @@ export const createOrder = async (req, res, next) => {
         duration: "once",
       });
     }
-
+    const customer = await stripe.customers.create({
+      description:
+        "My First Test Customer (created for API docs at https://www.stripe.com/docs/api)",
+      email: req.user.email,
+      address: {
+        line1: req.user.address,
+      },
+      name: req.user.userName,
+    });
+    console.log("customercustomer: ", customer);
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
@@ -148,14 +151,7 @@ export const createOrder = async (req, res, next) => {
       success_url: `http://localhost:8000/order/success?session_id={CHECKOUT_SESSION_ID}`,
       // success_url: process.env.SUCCESS_URL,http://localhost:8000/order/success?session_id={CHECKOUT_SESSION_ID}
       cancel_url: process.env.CANCEL_URL,
-      // line_items: [{
-      //     price_data: {
-      //         currency: ,
-      //         product_data: {name: , images: },
-      //         unit_amount: // price of one item
-      //     },
-      //     quantity:
-      // }], // array of objects [{}, {}, {}]
+      customer: customer.id,
       line_items: order.products.map((product) => {
         return {
           price_data: {
@@ -190,9 +186,10 @@ export const successOrder = async (req, res, next) => {
   console.log("customer: ", customer);
   if (!customer) return next(new Error("Customer Error"));
 
-  res.send(
-    `<html><body><h1>Thanks for your order, ${customer.name}!</h1></body></html>`
-  );
+  return res.json({
+    success: true,
+    customer,
+  });
 };
 
 export const cancelOrder = async (req, res, next) => {
@@ -233,4 +230,17 @@ export const webhook = async (req, res, next) => {
 
   await Order.findOneAndUpdate({ _id: orderId }, { status: "failed to pay" });
   return;
+};
+
+export const userOrders = async (req, res, next) => {
+  const orders = await Order.find({ user: req.user._id }).populate({
+    path: "products.productId",
+    select:
+      "name defaultImage.url price slug discount finalPrice category subcategory",
+    populate: {
+      path: "category",
+      select: "name",
+    },
+  });
+  return res.json({ success: true, orders });
 };

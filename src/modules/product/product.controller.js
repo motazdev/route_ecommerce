@@ -59,17 +59,22 @@ export const allProducts = async (req, res, next) => {
     const foundProduct = await Product.find({
       name: { $regex: req.query.search, $options: "i" },
     }).populate(["brand", "category", "subcategory"]);
-    console.log("foundProduct : ", foundProduct);
 
     return res.json({ success: true, results: foundProduct });
   }
-  if (req.params.categoryId) {
-    const category = await Category.findById(req.params.categoryId);
+  const limit = req.query.limit ? req.query.limit : 0;
+
+  if (req.params.categorySlug) {
+    console.log("asy8doiuasd8saoid: ", req.params.categorySlug);
+    const category = await Category.find({ slug: req.params.categorySlug });
     if (!category) return next(new Error("Category not found", { cause: 404 }));
-    const products = await Product.find({ category: req.params.categoryId });
+    const products = await Product.find({ category: req.params.categorySlug })
+      .paginate(req.query.page, limit)
+      .customSelect(req.query.fields)
+      .sort(req.query.sort)
+      .populate(["brand", "category", "subcategory"]);
     return res.json({ success: true, result: products });
   }
-  const limit = req.query.limit ? req.query.limit : 0;
   const priceMin = req.query.pricemn && req.query.pricemn;
   const priceMax = req.query.pricemx && req.query.pricemx;
 
@@ -94,6 +99,7 @@ export const allProducts = async (req, res, next) => {
       .populate(["brand", "category", "subcategory"]);
     return res.json({ success: true, products });
   }
+
   const products = await Product.find({ ...req.query })
     .paginate(req.query.page, limit)
     .customSelect(req.query.fields)

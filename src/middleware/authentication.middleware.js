@@ -7,7 +7,7 @@ export const isAuthenticated = asyncHandler(async (req, res, next) => {
   // let token = req.headers["token"];
   let token = req.headers["token"] || req.cookies.jwt;
   // req.cookies.jwt ? token =`${process.env.BEARER_KEY}${token}` : token
-
+  console.log(req.headers);
   if (!token || !token.startsWith(process.env.BEARER_KEY))
     return next(new Error("Valid token is required"));
 

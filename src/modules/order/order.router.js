@@ -7,16 +7,13 @@ import {
   cancelOrder,
   createOrder,
   successOrder,
+  userOrders,
   webhook,
 } from "./order.controller.js";
 import Stripe from "stripe";
 
 const router = Router();
 import express from "express";
-// TODO
-/*
-    2 endpoints for create order > one for "visa" one for "cash"
-*/
 
 router.post(
   "/",
@@ -40,4 +37,5 @@ router.post(
 );
 
 router.get("/success", asyncHandler(successOrder));
+router.get("/orders", isAuthenticated, asyncHandler(userOrders));
 export default router;

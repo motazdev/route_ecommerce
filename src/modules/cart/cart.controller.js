@@ -11,14 +11,8 @@ export const addToCart = async (req, res, next) => {
   // check product
   const product = await Product.findById(productId);
   if (!product) return next(new Error("Product not found!", { cause: 404 }));
-
-  // check stock
-  // if (quantity > product.availableItems)
-  //   return next(
-  //     new Error(
-  //       `Sorry, only ${product.availableItems} items left on the stock!`
-  //     )
-  //   );
+  console.log("quantity: ", quantity);
+  console.log("product.inStock(quantity): ", product.inStock(quantity));
   if (!product.inStock(quantity)) {
     return next(
       new Error(
@@ -28,13 +22,6 @@ export const addToCart = async (req, res, next) => {
     );
   }
 
-  // add to cart
-
-  //   const cart = await Cart.findOne({ user: req.user._id });
-  //   cart.products.push({ productId, quantity });
-  //   await cart.save();
-
-  // check the product existence in the cart >> // TODO
   console.log("CART USER: ", req.user.email);
 
   const isProductInCart = await Cart.findOne({
@@ -50,7 +37,6 @@ export const addToCart = async (req, res, next) => {
     },
   });
   if (isProductInCart) {
-    let stockError = false;
     try {
       isProductInCart.products.forEach((productObj) => {
         if (productObj.productId._id.toString() === productId.toString()) {
@@ -61,11 +47,6 @@ export const addToCart = async (req, res, next) => {
               `Sorry, only ${product.availableItems} items left on the stock!`,
               { cause: 400 }
             );
-            // return next(
-            //   new Error(
-            //     `Sorry, only ${product.availableItems} items left on the stock!`, {cause: 400}
-            //   )
-            // );
           }
         }
       });
