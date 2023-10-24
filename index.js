@@ -9,7 +9,7 @@ const app = express();
 app.use(cookieParser());
 dotenv.config();
 // app.use(cors({ origin: "http://localhost:8000", credentials: true }));
-
+app.use(cors());
 const port = process.env.PORT;
 
 connectDB();
