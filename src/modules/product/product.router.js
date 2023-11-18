@@ -10,11 +10,7 @@ import {
   singleProduct,
   updateProduct,
 } from "./product.controller.js";
-import {
-  createProductSchema,
-  productIdSchema,
-  updateProductSchema,
-} from "./product.validation.js";
+import { productIdSchema, updateProductSchema } from "./product.validation.js";
 const router = Router({ mergeParams: true });
 
 router.post(
@@ -25,7 +21,6 @@ router.post(
     { name: "defaultImage", maxCount: 1 },
     { name: "subImages", maxCount: 3 },
   ]),
-  //   isValid(createProductSchema),
   asyncHandler(addProduct)
 );
 
@@ -43,23 +38,5 @@ router.patch(
 
 router.get("/", allProducts);
 router.get("/single/:productId", isValid(productIdSchema), singleProduct);
-
-// read products of specefic categories
-
-// update product 2 endpoints or more > update images, name price discount
-
-// router.patch("/:subCategoryId",
-//     isAuthenticated,
-//     isAuthorized("admin"),
-//     fileUpload(filterObj.image).single("subcategory"),
-//     isValid(updateProductSchema),
-//     asyncHandler(updateSubCategory));
-
-// router.delete("/:subCategoryId",
-//     isAuthenticated,
-//     isAuthorized("admin"),
-//     isValid(deleteProductSchema), deleteSubCategory);
-
-// router.get("/", allSubCategs);
 
 export default router;
