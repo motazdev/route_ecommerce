@@ -174,6 +174,8 @@ export const login = async (req, res, next) => {
 
 export const refreshTokenHandler = async (req, res, next) => {
   const cookies = req.cookies;
+  console.log("cookies: ", cookies);
+  console.log("cookies.JWT: ", cookies.jwt);
   if (!cookies?.jwt)
     return next("Not authorized.. No jwt token", { cause: 401 });
   const refreshToken = cookies.jwt;
