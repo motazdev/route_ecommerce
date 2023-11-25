@@ -130,6 +130,28 @@ productSchema.query.customSelect = function (fields) {
   // const products = await Product.find().select(matchedKeys);
 };
 
+productSchema.query.customPriceFilter = function (minPrice, maxPrice) {
+  if (!minPrice && !maxPrice) return this;
+
+  const priceFilter = {};
+
+  if (minPrice) {
+    priceFilter.$gte = minPrice;
+  }
+
+  if (maxPrice) {
+    priceFilter.$lte = maxPrice;
+  }
+
+  return this.find({ price: priceFilter });
+};
+
+productSchema.query.customCategoryFilter = function (category) {
+  if (!category) return this;
+
+  return this.find({ category: category });
+};
+
 // stock function
 
 productSchema.methods.inStock = function (requiredQuantity) {

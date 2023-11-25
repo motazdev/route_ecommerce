@@ -75,7 +75,6 @@ export const allProducts = async (req, res, next) => {
   }
   const priceMin = req.query.pricemn && req.query.pricemn;
   const priceMax = req.query.pricemx && req.query.pricemx;
-
   if (priceMax && priceMin) {
     const products = await Product.find({
       $and: [
@@ -93,6 +92,8 @@ export const allProducts = async (req, res, next) => {
     })
       .paginate(req.query.page, limit)
       .customSelect(req.query.fields)
+      .customCategoryFilter(req.query.category)
+      .customPriceFilter(priceMin, priceMax)
       .sort(req.query.sort)
       .populate(["brand", "category", "subcategory"]);
     return res.json({ success: true, products });
