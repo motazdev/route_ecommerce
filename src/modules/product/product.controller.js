@@ -71,7 +71,11 @@ export const allProducts = async (req, res, next) => {
       .customSelect(req.query.fields)
       .sort(req.query.sort)
       .populate(["brand", "category", "subcategory"]);
-    return res.json({ success: true, result: products });
+    return res.json({
+      success: true,
+      result: products,
+      count: products.length,
+    });
   }
   const priceMin = req.query.pricemn && req.query.pricemn;
   const priceMax = req.query.pricemx && req.query.pricemx;
@@ -89,14 +93,14 @@ export const allProducts = async (req, res, next) => {
           },
         },
       ],
+      ...req.query,
     })
       .paginate(req.query.page, limit)
       .customSelect(req.query.fields)
-      .customCategoryFilter(req.query.category)
       .customPriceFilter(priceMin, priceMax)
       .sort(req.query.sort)
       .populate(["brand", "category", "subcategory"]);
-    return res.json({ success: true, products });
+    return res.json({ success: true, products, count: products.length });
   }
 
   const products = await Product.find({ ...req.query })
@@ -105,7 +109,7 @@ export const allProducts = async (req, res, next) => {
     .sort(req.query.sort)
     .populate(["brand", "category", "subcategory"]);
 
-  return res.json({ success: true, products });
+  return res.json({ success: true, products, count: products.length });
 };
 
 export const singleProduct = async (req, res, next) => {
