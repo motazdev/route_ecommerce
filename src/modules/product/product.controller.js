@@ -80,6 +80,21 @@ export const allProducts = async (req, res, next) => {
   const priceMin = req.query.pricemn && req.query.pricemn;
   const priceMax = req.query.pricemx && req.query.pricemx;
   if (priceMax && priceMin) {
+    const countFiltered = await Product.countDocuments({
+      $and: [
+        {
+          price: {
+            $gte: priceMin,
+          },
+        },
+        {
+          price: {
+            $lte: priceMax,
+          },
+        },
+      ],
+      ...req.query,
+    });
     const products = await Product.find({
       $and: [
         {
@@ -100,7 +115,7 @@ export const allProducts = async (req, res, next) => {
       .customPriceFilter(priceMin, priceMax)
       .sort(req.query.sort)
       .populate(["brand", "category", "subcategory"]);
-    return res.json({ success: true, products, count: products.length });
+    return res.json({ success: true, products, count: countFiltered });
   }
 
   const products = await Product.find({ ...req.query })
