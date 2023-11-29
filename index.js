@@ -10,11 +10,7 @@ app.use(cookieParser());
 dotenv.config();
 app.use(
   cors({
-    origin: [
-      "http://localhost:8000",
-      "https://route-ecommerce-react.vercel.app",
-      "https://route-ecommerce-react-mprgvvv9f-motazdev.vercel.app",
-    ],
+    origin: "https://route-ecommerce-react.vercel.app",
     credentials: true,
   })
 );
