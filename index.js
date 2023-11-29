@@ -21,6 +21,7 @@ app.use(function (req, res, next) {
   var allowedDomains = [
     "http://localhost:8000",
     "https://route-ecommerce-react.vercel.app",
+    "https://route-ecommerce-lemon.vercel.app",
   ];
   var origin = req.headers.origin;
   if (allowedDomains.indexOf(origin) > -1) {
