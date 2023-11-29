@@ -10,7 +10,6 @@ app.use(cookieParser());
 dotenv.config();
 app.use(
   cors({
-    origin: "*",
     credentials: true,
   })
 );
