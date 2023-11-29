@@ -13,6 +13,7 @@ app.use(
     origin: [
       "http://localhost:8000",
       "https://route-ecommerce-react.vercel.app",
+      "https://route-ecommerce-react-mprgvvv9f-motazdev.vercel.app",
     ],
     credentials: true,
   })
