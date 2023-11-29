@@ -31,7 +31,7 @@ export const appRouter = (app, express) => {
     }
     res.setHeader(
       "Access-Control-Allow-Origin",
-      "http://localhost:8000, https://route-ecommerce-react.vercel.app"
+      "https://route-ecommerce-react.vercel.app"
     );
     res.setHeader(
       "Access-Control-Allow-Headers",
