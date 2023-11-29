@@ -29,7 +29,10 @@ export const appRouter = (app, express) => {
     if (!whitelist.includes(req.header("origin"))) {
       return next(new Error("Blocked By CORS!"));
     }
-    res.setHeader("Access-Control-Allow-Origin", "http://localhost:8000");
+    res.setHeader(
+      "Access-Control-Allow-Origin",
+      "http://localhost:8000, https://route-ecommerce-react.vercel.app"
+    );
     res.setHeader(
       "Access-Control-Allow-Headers",
       "Content-Type, Authorization, token"
