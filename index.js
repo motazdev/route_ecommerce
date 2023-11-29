@@ -12,7 +12,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:8000",
-      "https://route-ecommerce-react.vercel.app/",
+      "https://route-ecommerce-react.vercel.app",
     ],
     credentials: true,
   })
