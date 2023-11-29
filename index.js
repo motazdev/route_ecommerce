@@ -8,11 +8,15 @@ const app = express();
 
 app.use(cookieParser());
 dotenv.config();
-app.use(
-  cors({
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: [
+//       "http://localhost:8000",
+//       "https://route-ecommerce-react.vercel.app",
+//     ],
+//     credentials: true,
+//   })
+// );
 // app.use(function (req, res, next) {
 //   var allowedDomains = [
 //     "http://localhost:8000",

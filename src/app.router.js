@@ -11,6 +11,33 @@ import morgan from "morgan";
 export const appRouter = (app, express) => {
   // app.use(express.json());
 
+  // CORS
+  const whitelist = [
+    "http://localhost:8000",
+    "https://route-ecommerce-react.vercel.app",
+  ];
+
+  app.use((req, res, next) => {
+    console.log(req.header("origin"));
+    // activate account api
+    if (req.originalUrl.includes("/auth/confirmEmail")) {
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader("Acccess-Control-Allow-Methods", "GET");
+      return next();
+    }
+
+    if (!whitelist.includes(req.header("origin"))) {
+      return next(new Error("Blocked By CORS!"));
+    }
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Headers", "*");
+    res.setHeader("Acccess-Control-Allow-Methods", "*");
+    res.setHeader("Acccess-Control-Allow-Private-Network", true);
+    return next();
+    // backend >>> deployed >>> server
+    // frontend >>>> local "private network"
+  });
+
   app.use((req, res, next) => {
     if (req.originalUrl.includes("/order/webhook")) return next();
 
