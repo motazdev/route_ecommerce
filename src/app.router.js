@@ -21,7 +21,7 @@ export const appRouter = (app, express) => {
     console.log(req.header("origin"));
     // activate account api
     if (req.originalUrl.includes("/auth/confirmEmail")) {
-      res.setHeader("Access-Control-Allow-Origin", "http://localhost:8000");
+      res.setHeader("Access-Control-Allow-Origin", "*");
       res.setHeader("Acccess-Control-Allow-Methods", "GET");
       return next();
     }
@@ -29,10 +29,21 @@ export const appRouter = (app, express) => {
     if (!whitelist.includes(req.header("origin"))) {
       return next(new Error("Blocked By CORS!"));
     }
-    res.setHeader("Access-Control-Allow-Origin", "http://localhost:8000");
-    res.setHeader("Access-Control-Allow-Headers", "http://localhost:8000");
-    res.setHeader("Acccess-Control-Allow-Methods", "http://localhost:8000");
-    res.setHeader("Acccess-Control-Allow-Private-Network", true);
+    // res.setHeader("Access-Control-Allow-Origin", "http://localhost:8000");
+    // res.setHeader("Access-Control-Allow-Headers", "http://localhost:8000");
+    // res.setHeader("Acccess-Control-Allow-Methods", "http://localhost:8000");
+    // res.setHeader("Acccess-Control-Allow-Private-Network", true);
+    // res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Allow-Origin", req.header("origin"));
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization"
+    ); // Add other headers your client may send
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, DELETE, OPTIONS"
+    );
+    res.setHeader("Access-Control-Allow-Private-Network", true);
     res.setHeader("Access-Control-Allow-Credentials", "true");
     return next();
     // backend >>> deployed >>> server
