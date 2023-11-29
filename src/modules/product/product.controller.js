@@ -95,6 +95,7 @@ export const allProducts = async (req, res, next) => {
       ],
       ...req.query,
     });
+
     const products = await Product.find({
       $and: [
         {
