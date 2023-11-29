@@ -21,7 +21,7 @@ export const appRouter = (app, express) => {
     console.log(req.header("origin"));
     // activate account api
     if (req.originalUrl.includes("/auth/confirmEmail")) {
-      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader("Access-Control-Allow-Origin", "http://localhost:8000");
       res.setHeader("Acccess-Control-Allow-Methods", "GET");
       return next();
     }
@@ -29,10 +29,11 @@ export const appRouter = (app, express) => {
     if (!whitelist.includes(req.header("origin"))) {
       return next(new Error("Blocked By CORS!"));
     }
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Headers", "*");
-    res.setHeader("Acccess-Control-Allow-Methods", "*");
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:8000");
+    res.setHeader("Access-Control-Allow-Headers", "http://localhost:8000");
+    res.setHeader("Acccess-Control-Allow-Methods", "http://localhost:8000");
     res.setHeader("Acccess-Control-Allow-Private-Network", true);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
     return next();
     // backend >>> deployed >>> server
     // frontend >>>> local "private network"
